@@ -1,0 +1,32 @@
+name: Auto Release on PR Merge
+
+on:
+  push:
+    branches:
+      - main  # or master, or your default branch
+
+jobs:
+  create-release:
+    if: github.event.head_commit.message != 'chore:release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js (if using semantic-release)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Bump version using npm or another tool
+          NEW_TAG="v$(date +'%Y.%m.%d.%H%M%S')"
+          echo "Creating release $NEW_TAG"
+          gh release create $NEW_TAG --generate-notes --title "Release $NEW_TAG"
