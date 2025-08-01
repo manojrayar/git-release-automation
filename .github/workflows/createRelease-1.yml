@@ -1,6 +1,9 @@
 name: Auto Release on PR Merge
 
 on:
+  pull_request:
+    branches:
+      - main
   push:
     branches:
       - main  # or master, or your default branch
@@ -27,4 +30,4 @@ jobs:
           # Bump version using npm or another tool
           NEW_TAG="v$(date +'%Y.%m.%d.%H%M%S')"
           echo "Creating release $NEW_TAG"
-          gh release create $NEW_TAG --generate-notes --title "Release $NEW_TAG"
+          gh release create $NEW_TAG --generate-notes --title "Release ${{github.event.head_commit.message}} $NEW_TAG"
